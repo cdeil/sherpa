@@ -233,10 +233,20 @@ class loggable(object):
 			if self.with_id:
 				the_args = inspect.getcallargs(func, *args, **kwargs)
 				id = the_args['id']
-				if self.with_keyword:    					model = the_args[self.with_keyword]    					if model is None:    						id = None  
-				id = session._fix_id(id)  			    				if id is not None: # otherwise don't do anything and let normal error handling take action					if not session._calls_tracker.has_key(id):						session._calls_tracker[id] = dict()    					session._calls_tracker[id][name] = line
-			else:    				session._calls_tracker[name] = line
-            		return ret		log_decorator._original = func # this is needed because __init__.py will recreate the methods, see that file for info (look up 'decorator')        	return log_decorator
+				if self.with_keyword:
+    					model = the_args[self.with_keyword]
+    					if model is None:
+    						id = None  
+				id = session._fix_id(id)  			
+    				if id is not None: # otherwise don't do anything and let normal error handling take action
+					if not session._calls_tracker.has_key(id):
+						session._calls_tracker[id] = dict()
+    					session._calls_tracker[id][name] = line
+			else:
+    				session._calls_tracker[name] = line
+            		return ret
+		log_decorator._original = func # this is needed because __init__.py will recreate the methods, see that file for info (look up 'decorator')
+        	return log_decorator
 
 
 class Session(NoNewAttributesAfterInit):
